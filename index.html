@@ -6,7 +6,7 @@
 		<script>
 function refreshCameraImage() {
 	var image = document.getElementById('camera');
-	image.setAttribute('src','/camera.png');
+	image.setAttribute('src','/camera.png?' + new Date().getTime());
 }
 
 setInterval(refreshCameraImage,100);
