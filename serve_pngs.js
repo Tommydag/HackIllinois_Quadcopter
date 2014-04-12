@@ -1,8 +1,12 @@
 var ardrone = require('ar-drone');
-var client = ardrone.createClient({'frameRate': 10});
+var client = ardrone.createClient({'frameRate': 30});
+
+var dstream = require('dronestream');
 
 var http = require('http');
 var fs = require('fs');
+
+var cv = require('opencv');
 
 var server = (function() {
 	var image;
@@ -20,8 +24,31 @@ var server = (function() {
 		} else console.log("no handler for '" + request.url + "'");
 	});
 
-	this.setImage = function(_image) {
-		image = _image;
+	var lastmat;
+
+	this.processMatrix = function(mat) {
+		if(lastmat == undefined) lastmat = mat;
+
+		mat.detectObject(cv.FACE_CASCADE,{},function(err, faces) {
+			if(faces.length > 0) {
+				var face = faces[0];
+
+				mat.ellipse(face.x + face.width/2,face.y + face.height/2,face.width/2,face.height/2);
+
+				var maxpower = 0.1;
+
+				if(face.x < 320) client.left((320 - face.x)/320*maxpower);
+				else client.right((face.x - 320)/320*maxpower);
+
+				if(face.y < 180) client.up((180 - face.y)/180*maxpower);
+				else client.down((face.y - 180)/180*maxpower);
+
+				if(face.width < 150) client.front((150 - face.width)/150*maxpower);
+				else client.back(Math.min(face.width - 150,150)/150*maxpower);
+			}
+
+			image = mat.toBuffer();
+		});
 	};
 
 	return this;
@@ -29,7 +56,9 @@ var server = (function() {
 
 server.server.listen(7000);
 
-client.config('video:video_channel',3);
-var pngstream = client.getPngStream();
-pngstream.on('data',function(data) { server.setImage(data); });
+var imstream = new cv.ImageStream();
+imstream.on('data',server.processMatrix);
+
+client.config('video:video_channel',0);
+client.getPngStream().pipe(imstream);
 
