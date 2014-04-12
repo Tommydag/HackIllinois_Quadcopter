@@ -3,6 +3,7 @@ var client = ardrone.createClient();
 var countPitch = 0;
 var countRoll = 0;
 var collect = true;
+//client.on('navdata', console.log);
 client.on('navdata', function(datalog){
 	var pitchVal = datalog.demo.rotation.pitch;
 	var rollVal = datalog.demo.rotation.roll;
@@ -22,7 +23,7 @@ client.on('navdata', function(datalog){
 			countRoll = 0;
 		}
 	if(pitchVal < -1) {
-		client.back(power + .15);
+		client.back(power + .1);
 		countPitch++;
 	}
 	else if(pitchVal > 1) {
@@ -34,7 +35,7 @@ client.on('navdata', function(datalog){
 		countRoll++;
 	}
 	else if(rollVal > 1) {
-		client.left(powerR + .1);
+		client.left(powerR + .15);
 		countRoll++;
 	}}
 	collect = !collect;
