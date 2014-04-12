@@ -91,6 +91,9 @@ require('tty').setRawMode(true);
 
 process.stdin.on('keypress',function(chunk,key) {
 	if(key == '5' || chunk == 'x') client.stop();
+	else if(chunk == 'c') {
+		client.calibrate(0);
+	}
 	else if(chunk == '4' || chunk == 'a') {
 		client.stop();
 		client.left(0.1);

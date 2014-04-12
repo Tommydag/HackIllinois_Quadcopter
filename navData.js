@@ -10,6 +10,7 @@ var rollVal = 0;
 // var yVel = 0;
 var collect = true;
 //client.on('navdata', console.log);
+//client.config('general:navdata_demo', 'FALSE');
 if(ardrone.demo){
 client.on('navdata', function(datalog){
 	// xVel = datalog.demo.xVelocity;
@@ -81,7 +82,12 @@ keypress(process.stdin);
 require('tty').setRawMode(true);
 
 process.stdin.on('keypress',function(chunk,key) {
-	if(key == '5' || chunk == 'x') client.stop();
+	if(key == '5' || chunk == 'x'){
+		client.stop();
+	}
+	else if(chunk == 'c' || chunk == '1') {
+		client.calibrate(0);
+	}
 	else if(chunk == '4' || chunk == 'a') {
 		client.stop();
 		client.left(0.1);
@@ -109,7 +115,8 @@ process.stdin.on('keypress',function(chunk,key) {
 		process.kill();
 	} else if(chunk == 'f') {
 		client.stop();
-		client.animate('flipAhead',15);
+		//client.animate('flipAhead',15);
+		client.animate('turnaround', 1000);
 	}
 	else if(chunk == 'y') {
 		client.land();
