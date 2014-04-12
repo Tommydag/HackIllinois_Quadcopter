@@ -4,21 +4,27 @@ var countPitch = 0;
 var countRoll = 0;
 var correctionX = 0;
 var correctionY = 0;
+var pitchVal = 0;
+var rollVal = 0;
 // var xVel = 0;
 // var yVel = 0;
 var collect = true;
 //client.on('navdata', console.log);
+if(ardrone.demo){
 client.on('navdata', function(datalog){
-	var pitchVal = datalog.demo.rotation.pitch;
-	var rollVal = datalog.demo.rotation.roll;
-	xVel = datalog.demo.xVelocity;
-	yVel = datalog.demo.yVelocity;
+	// xVel = datalog.demo.xVelocity;
+	// yVel = datalog.demo.yVelocity;
 	if(collect){
-	if(datalog.demo.altitude < 1) { //Altitude in meters
+		pitchVal = datalog.demo.rotation.pitch;
+		rollVal = datalog.demo.rotation.roll;
+	if(datalog.demo.altitude < .8) { //Altitude in meters
 		client.up(1);
 	}
 	else if (datalog.demo.altitude > 1) {
-		client.down(0.3);
+		client.down(0.1);
+	}
+	else { // altitude between 0.5 and 1 meters
+		client.up(0.1);
 	}
 	// if(xVel < -10) {
 	// 	correctionX = .1; // Add to right, subtract from left
@@ -62,8 +68,10 @@ client.on('navdata', function(datalog){
 		client.left(powerR + .15 - correctionX);
 		countRoll++;
 	}}
-	collect = !collect;
+	// collect = !collect;
 });
+}
+
 var control = ardrone.createUdpControl();
 
 var stdin = process.stdin;
