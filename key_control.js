@@ -37,7 +37,7 @@ process.stdin.on('keypress',function(chunk,key) {
 		process.kill();
 	} else if(chunk == 'f') {
 		client.stop();
-		client.animate('flipAhead',250);
+		client.animate('flipAhead',15);
 	}
 	else if(chunk == 'y') {
 		client.land();
