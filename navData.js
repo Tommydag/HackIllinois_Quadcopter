@@ -2,18 +2,42 @@ var ardrone = require('ar-drone');
 var client = ardrone.createClient();
 var countPitch = 0;
 var countRoll = 0;
+var correctionX = 0;
+var correctionY = 0;
+// var xVel = 0;
+// var yVel = 0;
 var collect = true;
 //client.on('navdata', console.log);
 client.on('navdata', function(datalog){
 	var pitchVal = datalog.demo.rotation.pitch;
 	var rollVal = datalog.demo.rotation.roll;
+	xVel = datalog.demo.xVelocity;
+	yVel = datalog.demo.yVelocity;
 	if(collect){
+	if(datalog.demo.altitude < 1) { //Altitude in meters
+		client.up(1);
+	}
+	else if (datalog.demo.altitude > 1) {
+		client.down(0.3);
+	}
+	// if(xVel < -10) {
+	// 	correctionX = .1; // Add to right, subtract from left
+	// } else if (xVel > 10) {
+	// 	correctionX = -.1;
+	// }
+
+	// if(yVel < -10) {
+	// 	correctionY = .1; // Add to front, subtract from back
+	// } else if (yVel > 10) {
+	// 	correctionY = -.1;
+	// }
+
 	console.log(pitchVal + "   " + rollVal);
 	var power = 0.1-countPitch*.01;
 	var powerR = 0.1-countRoll*.01;
-	if(datalog.demo.rotation.yaw != 0) {
-		client.up(.5);
-	}
+	// if(datalog.demo.rotation.yaw != 0) {
+	// 	client.up(.5);
+	// }
 		if (power < 0){
 			power = 0.1;
 			countPitch = 0;
@@ -23,19 +47,19 @@ client.on('navdata', function(datalog){
 			countRoll = 0;
 		}
 	if(pitchVal < -1) {
-		client.back(power + .1);
+		client.back(power + .1 + correctionY);
 		countPitch++;
 	}
 	else if(pitchVal > 1) {
-		client.front(power - .1);
+		client.front(power - .1 - correctionY);
 		countPitch++;
 	}
 	if(rollVal < -1) {
-		client.right(powerR - .1);
+		client.right(powerR - .1 + correctionX);
 		countRoll++;
 	}
 	else if(rollVal > 1) {
-		client.left(powerR + .15);
+		client.left(powerR + .15 - correctionX);
 		countRoll++;
 	}}
 	collect = !collect;
