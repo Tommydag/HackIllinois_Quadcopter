@@ -9,23 +9,23 @@ keypress(process.stdin);
 require('tty').setRawMode(true);
 
 process.stdin.on('keypress',function(chunk,key) {
-	if(key == '5') client.stop();
-	else if(chunk == '4') {
+	if(key == '5' || chunk == 'x') client.stop();
+	else if(chunk == '4' || chunk == 'a') {
 		client.stop();
 		client.left(0.1);
-	} else if(chunk == '6') {
+	} else if(chunk == '6' || chunk == 'd') {
 		client.stop();
 		client.right(0.1);
-	} else if(chunk == '8') {
+	} else if(chunk == '8' || chunk == 'w') {
 		client.stop();
 		client.front(0.1);
-	} else if(chunk == '2') {
+	} else if(chunk == '2' || chunk == 's') {
 		client.stop();
 		client.back(0.1);
-	} else if(chunk == '+') {
+	} else if(chunk == '+' || chunk == 'j') {
 		client.stop();
-		client.up(0.1);
-	} else if(chunk == '-') {
+		client.up(1);
+	} else if(chunk == '-' || chunk == 'k') {
 		client.stop();
 		client.down(0.1);
 	} else if(chunk == '0') {
@@ -40,6 +40,10 @@ process.stdin.on('keypress',function(chunk,key) {
 	} else if(chunk == 'f') {
 		client.stop();
 		client.animate('flipAhead',15);
+	}
+	else if(chunk == 'y') {
+		client.land();
+		control.ref({fly: true, emergency: true});
 	}
 });
 
