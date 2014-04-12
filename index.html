@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Quadcoptor Control</title>
+
+		<script>
+function refreshCameraImage() {
+	var image = document.getElementById('camera');
+	image.setAttribute('src','/camera.png');
+}
+
+setInterval(refreshCameraImage,100);
+		</script>
+	</head>
+
+	<body>
+		<img id="camera" src="/camera.png">
+	</body>
+</html>
+
