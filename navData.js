@@ -9,7 +9,7 @@ var rollVal = 0;
 // var xVel = 0;
 // var yVel = 0;
 var collect = true;
-//client.on('navdata', console.log);
+client.on('navdata', console.log);
 //client.config('general:navdata_demo', 'FALSE');
 if(ardrone.demo){
 client.on('navdata', function(datalog){
@@ -19,12 +19,12 @@ client.on('navdata', function(datalog){
 		pitchVal = datalog.demo.rotation.pitch;
 		rollVal = datalog.demo.rotation.roll;
 	if(datalog.demo.altitude < .8) { //Altitude in meters
-		client.up(1);
+		client.up(0.8);
 	}
 	else if (datalog.demo.altitude > 1) {
 		client.down(0.1);
 	}
-	else { // altitude between 0.5 and 1 meters
+	else { // altitude between 0.8 and 1 meters
 		client.up(0.1);
 	}
 	// if(xVel < -10) {

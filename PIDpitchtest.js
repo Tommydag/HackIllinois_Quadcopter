@@ -1,12 +1,12 @@
 //PID
 //Pitch
-var P_pitch = 1;
-var I_pitch = 0;
-var D_pitch = 0;
+var P_pitch = .8;
+var I_pitch = .1;
+var D_pitch = .1;
 //Roll
-var P_roll = 1;
-var I_roll = 0;
-var D_roll = 0;
+var P_roll = .8;
+var I_roll = .1;
+var D_roll = .1;
 
 //set desired pitch and roll values
 var MV_pitch = 0;
@@ -52,7 +52,7 @@ var client = ardrone.createClient();
 //Hovermode
 var count = 0;
 //begin hovermode
-//client.on('navdata', console.log);
+client.on('navdata', console.log);
 if(ardrone.demo){
 client.on('navdata', function(datalog){
 	//Get values for current pitch, p
