@@ -30,13 +30,11 @@ var server = (function() {
 
 				mat.ellipse(face.x + face.width/2,face.y + face.height/2,face.width/2,face.height/2);
 
-				var maxpower = 0.1;
-
 				control.pcmd({
-					'front': Math.max(50 - face.width,-50)/50*maxpower,
+			//		'front': Math.max(50 - face.width,-50)/50*maxpower,
 					'left': 0,
-					'up': (180 - face.y)/180*maxpower,
-					'counterclockwise': (320 - face.x)/320*maxpower
+					'up': (180 - face.y)/180*0.5,
+					'counterclockwise': (320 - face.x)/320*1
 				});
 				control.flush();
 			}
@@ -115,9 +113,6 @@ function PID(MV,pitch_c,roll_c,count){
 }
 	
 //FLYING DRONE
-//connect to drone
-var ardrone = require('ar-drone');
-var client = ardrone.createClient();
 //Hovermode
 var count = 0;
 //begin hovermode
@@ -139,10 +134,10 @@ var stdin = process.stdin;
 
 var keypress = require('keypress');
 keypress(process.stdin);
-require('tty').setRawMode(true);
+process.stdin.setRawMode(true);
 
 process.stdin.on('keypress',function(chunk,key) {
-	if(key == '5' || chunk == 'x') client.stop();
+	if(chunk == '5' || chunk == 'x') client.stop();
 	else if(chunk == 'c') {
 		client.calibrate(0);
 	}
@@ -165,8 +160,10 @@ process.stdin.on('keypress',function(chunk,key) {
 		client.stop();
 		client.down(0.2);
 	} else if(chunk == '0' || chunk == 'i') {
+		console.log('landing...');
 		client.land();
 	} else if(chunk == '.' || chunk == '.') {
+		console.log('taking off...');
 		client.takeoff();
 	} else if(chunk == 'q') {
 		client.stop();
@@ -176,7 +173,41 @@ process.stdin.on('keypress',function(chunk,key) {
 		client.animate('flipAhead',15);
 	}
 	else if(chunk == 'y') {
+		console.log('emergency!');
 		client.land();
 		control.ref({fly: true, emergency: true});
 	}
 });
+
+var fs = require('fs');
+var url = require('url');
+var http = require('http');
+
+http.createServer(function(request, response) {
+	var req = url.parse(request.url,true);
+
+	switch(req.pathname) {
+	case '/':
+		fs.createReadStream('Gui.html').pipe(response);
+		break;
+
+	case '/pattern_wallpaper_by_invaderjohn.jpg':
+		fs.createReadStream(__dirname + req.pathname).pipe(response);
+		break;
+
+	case '/start':
+		console.log('/start accessed');
+		client.takeoff();
+		break;
+
+	case '/stop':
+		console.log('/stop accessed');
+		client.land();
+		break;
+
+	default:
+		console.log('unhandled url: ' + request.url);
+		break;
+	}
+}).listen(80);
+
