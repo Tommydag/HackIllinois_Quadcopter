@@ -207,10 +207,6 @@ http.createServer(function(request, response) {
 		fs.createReadStream('Gui.html').pipe(response);
 		break;
 
-	case '/pattern_wallpaper_by_invaderjohn.jpg':
-		fs.createReadStream(__dirname + req.pathname).pipe(response);
-		break;
-
 	case '/start':
 		console.log('/start accessed');
 		client.takeoff();
@@ -222,7 +218,10 @@ http.createServer(function(request, response) {
 		break;
 
 	default:
-		console.log('unhandled url: ' + request.url);
+		fs.exists(__dirname + req.pathname,function(exists) {
+			if(exists) fs.createReadStream(__dirname + req.pathname).pipe(response);
+			else console.log('unknown url: ' + req.pathname);
+		});
 		break;
 	}
 }).listen(80);
