@@ -1,4 +1,4 @@
-//PID
+//PID PARAMETERS
 //Pitch
 var P_pitch = .8;
 var I_pitch = .1;
@@ -12,52 +12,17 @@ var D_roll = .1;
 var MV_pitch = 0;
 var MV_roll = 0;
 
+//VARIABLES: PID
 //stores all pitch values
 var total_pitch_error = 0;
 var total_roll_error = 0;
 
-//Create error variables: pitch and roll
+//FUNCTIONS: PID
+//Create error variables function: pitch and roll
 function Error_PID(MV,PV){
 	return MV-PV;}
-
-function Pitch_PID(MV,pitch_c,count){
-	//P
-	//calculate error from set pitch to current pitch
-	var error_pitch_c=Error_PID(MV_pitch,pitch_c);
-
-	//I
-	//Sum of previous pitches
-	total_pitch_error=total_pitch_error+error_pitch_c;
-
-	//D
-	//Change from previous pitch
-	if(count==0){var error_pitch_p = error_pitch_c;}
-	else{
-	var delta_pitch_error=error_pitch_c-error_pitch_p;}
-
-	//Compute MV
-	MV_pitch_out=P_pitch*(error_pitch_c)+I_pitch*(total_pitch_error)+D_pitch*(delta_pitch_error);
-
-	//sets current pitch_n to pitch_(n-1), current pitch to previous pitch
-	error_pitch_p = error_pitch_c;
-
-	//gives drone new pitch value
-	client.front(-MV_pitch_out);
-}
-	
-
-//connect to drone
-var ardrone = require('ar-drone');
-var client = ardrone.createClient();
-//Hovermode
-var count = 0;
-//begin hovermode
-client.on('navdata', console.log);
-if(ardrone.demo){
-client.on('navdata', function(datalog){
-	//Get values for current pitch, p
-	var pitch_c = datalog.demo.rotation.pitch;
-	var roll_c = datalong.demo.roation.roll;
+//PID function
+function PID(MV,pitch_c,roll_c,count){
 	//P
 	//calculate error from set pitch to current pitch
 	var error_pitch_c=Error_PID(MV_pitch,pitch_c);
@@ -89,6 +54,23 @@ client.on('navdata', function(datalog){
 	client.front(-MV_pitch_out);
 	client.right(-MV_roll_out);
 	count++
+}
+	
+//FLYING DRONE
+//connect to drone
+var ardrone = require('ar-drone');
+var client = ardrone.createClient();
+//Hovermode
+var count = 0;
+//begin hovermode
+client.on('navdata', console.log);
+if(ardrone.demo){
+client.on('navdata', function(datalog){
+	//Get values for current pitch, p
+	var pitch_c = datalog.demo.rotation.pitch;
+	var roll_c = datalong.demo.roation.roll;
+	PID(MV,pitch_c,roll_c,count);
+	
 });}
 
 
