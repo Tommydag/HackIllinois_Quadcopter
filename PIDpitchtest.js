@@ -1,12 +1,12 @@
 //PID PARAMETERS
 //Pitch
 var P_pitch = .8;
-var I_pitch = .1;
-var D_pitch = .1;
+var I_pitch = .2;
+var D_pitch = 0;
 //Roll
 var P_roll = .8;
-var I_roll = .1;
-var D_roll = .1;
+var I_roll = .2;
+var D_roll = 0;
 
 //set desired pitch and roll values
 var MV_pitch = 0;
