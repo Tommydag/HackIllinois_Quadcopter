@@ -6,6 +6,15 @@ var http = require('http');
 var fs = require('fs');
 
 var cv = require('opencv');
+//Tommy PID stuff
+var count_image=0;
+var P_yaw_i=1;
+var I_yaw_i=0;
+var D_yaw_i=0;
+
+var yaw_i=0;
+var yaw_total=0;
+//
 
 var server = (function() {
 	var image;
@@ -27,16 +36,23 @@ var server = (function() {
 		mat.detectObject(cv.FACE_CASCADE,{},function(err, faces) {
 			if(faces.length > 0) {
 				var face = faces[0];
-
+				yaw_i=(320-face.x);
 				mat.ellipse(face.x + face.width/2,face.y + face.height/2,face.width/2,face.height/2);
 
+				if(count_image==0){var yaw_i_p=yaw_i}
 				control.pcmd({
 			//		'front': Math.max(50 - face.width,-50)/50*maxpower,
 					'left': 0,
-					'up': (180 - face.y)/180*0.5,
-					'counterclockwise': (320 - face.x)/320*1
+			//		'up': (180 - face.y)/180*0.5,
+					'up': 0,
+			//		'counterclockwise': (320 - face.x)/320*1
+					'counterclockwise': -((P_yaw_i)*yaw_i+I_yaw_i*(yaw_total)+D_yaw_i*(yaw_i-yaw_i_p))
 				});
 				control.flush();
+				//Tommy additions
+				yaw_total=yaw_total+yaw_i
+				yaw_i_p=yaw_i;
+				count_image++;
 			}
 
 			image = mat.toBuffer();
