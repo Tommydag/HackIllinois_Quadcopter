@@ -15,18 +15,36 @@
     font-weight:400;
     }
     p {
+    text-align: center;
     font-family: sans-serif;
     }
     h1 {
+      text-align: center;
     font-family: FromCartoonBlocks;
     font-size: 48px;
     }
     h2 {
+      text-align: center;
     font-family: Arial;
+    }
+
+    button.used {
+      display: block;
+      margin-left: auto;
+      margin-right: auto
+    }
+
+    IMG.displayed {
+      display: block;
+      margin-left: auto;
+      margin-right: auto
     }
 
     </style>
     <style> body{
+      display: block;
+      margin-left: auto;
+      margin-right: auto
       color: #000;
       font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
       font-size: 12px;
@@ -41,12 +59,9 @@
       </div>
       <div id="container2" class"col">
        <h2>Settings:</h2>  
-         <button type="button">Start Copter</button> 
-       <p>Zoom:<p>
-         <input type="range" min="0" max="100" value="0" step="5" onchange="showValue(this.value)" />
-         <span id="range">0</span>
+         <button class="used" type="button">Start Copter</button> 
       </div>
-      <img src="http://static02.mediaite.com/geekosystem/uploads/2013/12/doge.jpg" width="(60)" height="(45)" alt="HTML Dog">
+      <img class="displayed" src="http://static02.mediaite.com/geekosystem/uploads/2013/12/doge.jpg" width="(60)" height="(45)" alt="HTML Dog">
       <p> Very HTML, Much Good (Placeholder for future camera images)</p>
   </body>
 </html>
