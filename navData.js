@@ -1,3 +1,13 @@
+// File: navData.js
+// Authors: Kevin Riehm, Thomas Mulc, Ian Ludden, and Thomas D'Agostino
+// Date: April 11-13, 2014
+// Written to work with Parrot drone at HackIllinois competition. 
+
+// Section 1
+// - Initialization of variables/communication
+// - Collection of navdata from drone
+// - Experimentation with reactions to processed data
+
 var ardrone = require('ar-drone');
 var client = ardrone.createClient();
 var countPitch = 0;
@@ -18,6 +28,8 @@ client.on('navdata', function(datalog){
 	if(collect){
 		pitchVal = datalog.demo.rotation.pitch;
 		rollVal = datalog.demo.rotation.roll;
+
+	// Experiments to 
 	if(datalog.demo.altitude < .8) { //Altitude in meters
 		client.up(0.8);
 	}
@@ -27,6 +39,8 @@ client.on('navdata', function(datalog){
 	else { // altitude between 0.8 and 1 meters
 		client.up(0.1);
 	}
+
+	/** Early attempts at rudimentary control. 
 	// if(xVel < -10) {
 	// 	correctionX = .1; // Add to right, subtract from left
 	// } else if (xVel > 10) {
@@ -38,8 +52,11 @@ client.on('navdata', function(datalog){
 	// } else if (yVel > 10) {
 	// 	correctionY = -.1;
 	// }
+	*/
 
-	console.log(pitchVal + "   " + rollVal);
+	console.log(pitchVal + "   " + rollVal); // Displays values.
+
+	// More basic control attempts below. 
 	var power = 0.1-countPitch*.01;
 	var powerR = 0.1-countRoll*.01;
 	// if(datalog.demo.rotation.yaw != 0) {
@@ -73,6 +90,8 @@ client.on('navdata', function(datalog){
 });
 }
 
+// These few lines set up control of the ardrone and allow keypress monitoring.
+
 var control = ardrone.createUdpControl();
 
 var stdin = process.stdin;
@@ -80,6 +99,9 @@ var stdin = process.stdin;
 var keypress = require('keypress');
 keypress(process.stdin);
 require('tty').setRawMode(true);
+
+// Section 2
+// - Bind keys to different actions/functions of the quadcopter
 
 process.stdin.on('keypress',function(chunk,key) {
 	if(key == '5' || chunk == 'x'){
@@ -115,6 +137,10 @@ process.stdin.on('keypress',function(chunk,key) {
 		process.kill();
 	} else if(chunk == 'f') {
 		client.stop();
+
+		// Here, we were experimenting with various built-in functions,
+		// including different types of flips.
+
 		//client.animate('flipAhead',15);
 		client.animate('turnaround', 1000);
 	}
